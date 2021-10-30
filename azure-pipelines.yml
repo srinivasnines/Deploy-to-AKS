@@ -37,7 +37,7 @@ stages:
   displayName: Deploy to Dev
   dependsOn: Build
   variables:
-    -acrsecret: k8examplesauth
+    acrsecret: k8examplesauth
   jobs:
     - job: Deploy
       displayName: Deploye to AKS
