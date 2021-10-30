@@ -38,6 +38,8 @@ stages:
   dependsOn: Build
   variables:
     acrsecret: k8examplesauth
+    acrdevurl: 'k8sexamples.azurecr.io'
+    replicaNo: 3
   jobs:
     - deployment: Deploy
       displayName: Deploye to AKS
@@ -60,6 +62,22 @@ stages:
               secretType: 'dockerRegistry'
               secretName: '$(acrsecret)'
               dockerRegistryEndpoint: 'K8Examples'
+          - task: replacetokens@4
+            displayName: Replace Token
+            inputs:
+              rootDirectory: '$(Pipeline.Workspace)/manifests/'
+              targetFiles: 'deployment.yml'
+              encoding: 'auto'
+              tokenPattern: 'custom'
+              tokenPrefix: '#'
+              tokenSuffix: '#'
+              writeBOM: true
+              actionOnMissing: 'warn'
+              keepToken: false
+              actionOnNoFiles: 'continue'
+              enableTransforms: false
+              useLegacyPattern: false
+              enableTelemetry: true
           - task: KubernetesManifest@0
             inputs:
               action: 'deploy'
